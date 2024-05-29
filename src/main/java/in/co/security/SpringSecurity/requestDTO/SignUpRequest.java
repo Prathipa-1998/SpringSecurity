@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Email;
 import lombok.Data;
 
 @Data
-public class SignUpRequest {
+public class SignupRequest {
 	private String username;
 	@Email
 	private String email;

@@ -1,6 +1,7 @@
 package in.co.security.SpringSecurity.websecurity;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,9 +21,13 @@ import in.co.security.SpringSecurity.service.UserDetailsServiceImpl;
 
 
 
-@Configuration
-@EnableMethodSecurity
+
+
 public class WebSecurityConfig {
+	
+	@Value("${spring.h2.console.path}")
+	  private String h2ConsolePath;
+	
 	 @Autowired
 	  UserDetailsServiceImpl userDetailsService;
 	 
@@ -55,21 +60,21 @@ public class WebSecurityConfig {
 	  }
 	 
 	 @Bean
-	  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-	    http.csrf(csrf -> csrf.disable())
-	        .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-	        .authorizeHttpRequests(auth -> 
-	          auth.requestMatchers("/api/auth/**").permitAll()
-	              .requestMatchers("/api/test/**").permitAll()
-	              .anyRequest().authenticated()
-	        );
-	    
-	    http.authenticationProvider(authenticationProvider());
+	 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	     http.csrf(csrf -> csrf.disable())
+	         .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+	         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+	         .authorizeHttpRequests(auth -> 
+	             auth.requestMatchers("/api/auth/**").permitAll()
+	                 .requestMatchers("/api/test/**").permitAll()
+	                 .anyRequest().authenticated()
+	         );
+	     
+	     http.authenticationProvider(authenticationProvider());
 
-	    http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-	    
-	    return http.build();
+	     http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+	     
+	     return http.build();
 	  }
 	 
 }
